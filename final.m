@@ -7,3 +7,25 @@
 %                                                           '-..__ __..-'
 %                                                           jgs  /_\
 %==========================================================================
+
+%% Front End
+% view or input pt data
+
+
+%% Biomarker Evaluation
+% input pt biomarkers, evaluate good/bad
+
+
+
+%% Data Storage
+% store pt biomarkers, generated data
+
+
+
+%% Graphics
+% display pt data, trends, etc from view pt data
+
+
+
+%% Future Trend Approximation
+% create approximated trend based on available data
