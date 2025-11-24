@@ -1,14 +1,17 @@
 % BMI Calculation, classification, and information storage/updating
 % Must be called in one of two ways: 
-% addVisitToExcel("PatientName.xlsx",height, weight,"Date w/Year-Month-Day Format");
+% addVisitToExcel("PatientName.xlsx",height, weight, temperature, systolic bp, diastolic bp, Date w/Year-Month-Day Format");
 % OR
 % filename = ("PatientName.xlsx");
 % height = height in m;
 % weight = weight in kg;
+% temp = temperature in °F
+% sys_bp = blood pressure during peak systole in mmHg
+% dia_bp = blood pressure during diastole in mmHg
 % VisitDate = "Date in Year-Month-Day Format";
-% addVisitToExcel(filename, height, weight, visitDate);
+% addVisitToExcel(filename, height, weight, temperature, sys_bp, dia_bp, visitDate);
  
-function addVisitToExcel(filename, height, weight, visitDate)
+function addVisitToExcel(filename, height, weight, temp, sys_bp, dia_bp, visitDate)
 
     % ------------ BMI Calculation ------------
     BMI = weight / (height^2);
@@ -22,7 +25,57 @@ function addVisitToExcel(filename, height, weight, visitDate)
         else
             category = "Obese";
     end
-
+    
+    % -------------- Body Temperature --------------
+    if temp > 100.4
+        tempcat = "Fever";
+    elseif temp < 95
+        tempcat = "Hypothermia";
+    else 
+        tempcat = "Normal Temperature";
+    end
+    
+    % ------------ Blood Pressure Categorization ------------
+    if sys_bp >= 160
+            bp = "Stage 2 Hypertension";
+    elseif sys_bp >= 140
+        if dia_bp >= 100
+            bp = "Stage 2 Hypertension";
+        else 
+            bp = "Stage 1 Hypertension";
+        end
+    elseif sys_bp >= 120
+        if dia_bp >= 100 
+            bp = "Stage 2 Hypertension";
+        elseif dia_bp >= 90
+            bp = "Stage 1 Hypertension";
+        else 
+            bp = "Pre Hypertension";
+        end
+    elseif sys_bp >= 90
+        if dia_bp >= 100
+            bp = "Stage 2 Hypertension";
+        elseif dia_bp >= 90
+            bp = "Stage 1 Hypertension";
+        elseif dia_bp >= 80 
+            bp = "Pre Hypertension";
+        else
+            bp = "Normal";
+        end
+    elseif sys_bp < 90
+        if dia_bp >= 100
+            bp = "Stage 2 Hypertension";
+        elseif dia_bp >= 90
+            bp = "Stage 1 Hypertension";
+        elseif dia_bp >= 80
+            bp = "Pre Hypertension";
+        elseif dia_bp >= 60
+            bp = "Normal";
+        else
+            bp = "Low";
+        end
+    end
+    dbp = ((2 * dia_bp) + sys_bp) / 3;
     % ------------ Load or create Visits sheet ------------
     try
         opts = detectImportOptions(filename, 'Sheet', 'Visits');  % opens excel file
@@ -36,8 +89,8 @@ function addVisitToExcel(filename, height, weight, visitDate)
 
     % ------------ Append the new visit ------------
     newEntry = table( ...
-        string(visitDate), height, weight, BMI, string(category), ...
-        'VariableNames', {'Date','Height_m','Weight_kg','BMI','BMI_Category'} ...
+        string(visitDate), height, weight, BMI, string(category), temp, string(tempcat), dbp, string(bp), ...
+        'VariableNames', {'Date','Height_m','Weight_kg','BMI','BMI_Category','Temperature','Temp_Category','Blood Pressure','Blood Pressure Category'} ...
     );
 
     visits = [visits; newEntry];
