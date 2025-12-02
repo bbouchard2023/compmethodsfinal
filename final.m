@@ -15,12 +15,7 @@
 %% Biomarker Evaluation
 % input pt biomarkers, evaluate good/bad
 
-height = input("Height (m)? ");
-weight = input("Weight (kg)? ");
-temperature = input("Body Temperature (°F)? ");
-sys_bp = input("Systolic Blood Pressure (mmHg)? ");
-dia_bp = input("Diastolic Blood Pressure (mmHg)? ");
-date = input("Today's Date (MMDDYYYY)? ");
+
 
 %% Data Storage
 % store pt biomarkers, generated data
